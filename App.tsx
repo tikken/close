@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-import Navi from './navigation/navigator.tsx';
+import Navi from './navigation/navigator';
 import { createStore, combineReducers } from 'redux';
 import JoinChatReducer from './store/reducers/joinChat';
 import { Provider } from 'react-redux';

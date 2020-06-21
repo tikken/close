@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { joinChat } from '../store/actions/joinChat';
 import colors from '../constants/colors';
+import { login } from '../store/actions/login';
+import axios from 'axios';
 
 const JoinForm = props => {
     const storeState = useSelector(state => state.chat);
@@ -10,8 +11,21 @@ const JoinForm = props => {
     const [roomName, setRoomName] = useState('');
 
     const dispatch = useDispatch();
+
     const joinChatHandler = () => {
-       dispatch(joinChat(identity, roomName));
+        const TWILIO_TOKEN_URL = 'https://periwinkle-collie-4881.twil.io/create-room-token';
+        async function GetRoomToken(identity, roomName) {
+            let result = await axios.post(TWILIO_TOKEN_URL, {
+                identity,
+                roomName
+            });
+            
+            return result.data
+        };
+        
+        GetRoomToken(identity, roomName).then((token) => {
+            dispatch(login(identity, roomName, token));
+        });
     }
 
     return (
@@ -31,10 +45,6 @@ const JoinForm = props => {
                 onChangeText={text => setIdentity(text)}
                 value={identity}
             />
-
-            {/*<Button title={"Join chat"} onPress={() => {*/}
-                {/*props.navigation.navigate({ routeName: 'Room' });*/}
-            {/*}} />*/}
 
             <Button title={"Join chat"} onPress={joinChatHandler} color={colors.black} />
         </View>
